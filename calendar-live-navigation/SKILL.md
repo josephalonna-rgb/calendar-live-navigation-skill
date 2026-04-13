@@ -13,7 +13,7 @@ This skill covers four connected jobs:
 - read upcoming calendar events
 - extract only usable physical destinations
 - compute navigation links and live driving ETA
-- send reminder messages only when a reminder is actually due
+- send reminder messages only when a reminder is actually due, including origin-specific commute time and latest leave time
 
 ## Core workflow
 
@@ -81,6 +81,8 @@ A cron-triggered agent turn should:
 - parse machine-readable JSON
 - reply exactly `NO_REPLY` when nothing is due
 - return one concise user-facing reminder when something is due
+- include per-origin commute lines for the user's saved origins, especially `home` and `office`
+- include the latest leave time for each origin when live routing is available
 
 Do not let the cron worker freeform its own logic when the local app already computed the due reminders.
 
@@ -89,13 +91,13 @@ Do not let the cron worker freeform its own logic when the local app already com
 - Start with machine-readable output when validating behavior.
 - Separate extraction errors from routing errors from delivery errors.
 - Treat `no reminder due` as success, not failure.
-- Prefer short reminder text with summary, minutes remaining, destination, and navigation link.
+- Prefer short reminder text with summary, minutes remaining, destination, per-origin ETA, latest leave time, and navigation link.
 - When the user asks debugging questions, inspect skipped reasons and state files before guessing.
 
 ## Recommended local app shape
 
 A good local helper app for this skill should support:
-- `check` for due reminder detection
+- `check` for due reminder detection, including structured route estimates from saved origins
 - `origins-list` and `origins-resolve` for fixed origins
 - `origins-save` for durable user-confirmed places
 - `trip` for origin-aware ETA and leave-time checks

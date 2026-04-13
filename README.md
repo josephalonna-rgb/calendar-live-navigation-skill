@@ -34,6 +34,7 @@ This repo packages a generic workflow for an agent that needs to:
 - dedupe reminder sends
 - resolve saved origins like `home` and `office`
 - answer `when should I leave` with live routing when available
+- include origin-specific commute time and latest leave time inside reminder messages
 - drive cron-based reminder delivery without making things up
 
 ## What this skill is for
@@ -42,6 +43,7 @@ Use `calendar-live-navigation` when an agent needs to:
 - inspect why a meeting reminder did or did not fire
 - answer ETA questions from saved origins
 - compute leave time for a meeting with a physical destination
+- compare commute time from multiple saved origins like home and office
 - debug calendar extraction, routing, dedupe, or cron issues
 
 ## Workflow, in one picture
@@ -84,10 +86,11 @@ Calendar events or trip question
 +------------------+   +----------------------+
       |
       v
-+------------------+
-| Send reminder or |
-| return NO_REPLY  |
-+------------------+
++------------------------------+
+| Send reminder with home and  |
+| office ETA + latest leave    |
+| time, or return NO_REPLY     |
++------------------------------+
 ```
 
 ## What is included
@@ -103,6 +106,7 @@ Calendar events or trip question
 - `calendar-live-navigation/references/reminder-and-trip-workflow.md`
   - the full reminder and trip execution pattern
   - fixed-origin data expectations
+  - multi-origin reminder output guidance
   - failure handling guidance
 - `calendar-live-navigation/references/cron-prompt-patterns.md`
   - reusable cron prompt templates
@@ -121,6 +125,7 @@ Calendar events or trip question
 - **Treat no reminder due as success**
 - **Separate selection bugs from delivery bugs**
 - **Keep cron workers thin and deterministic**
+- **Put latest leave time directly in the reminder when possible**
 
 ## Example triggers
 This skill should trigger on asks like:
@@ -129,6 +134,7 @@ This skill should trigger on asks like:
 - `how long from home to office right now`
 - `when should I leave for this meeting`
 - `turn calendar events into Waze reminders`
+- `tell me the ETA from home and office for this meeting reminder`
 
 ## Repo layout
 

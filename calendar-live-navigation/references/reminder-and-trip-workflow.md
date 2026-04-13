@@ -18,16 +18,19 @@ Use reminder mode when the system needs to decide whether a calendar event deser
 3. Identify events that are due inside the reminder window.
 4. Extract a usable physical destination from the event location.
 5. Skip remote-only or weak destinations.
-6. Build navigation links.
-7. Check dedupe state.
-8. Return due reminders plus skipped reasons.
-9. Persist sent-state only when not in dry-run mode.
+6. For each configured saved origin, compute live ETA and latest leave time when available.
+7. Build navigation links.
+8. Check dedupe state.
+9. Return due reminders plus skipped reasons.
+10. Persist sent-state only when not in dry-run mode.
 
 ### Good reminder output
 Keep it short and actionable:
 - meeting summary
 - how long remains
 - destination
+- per-origin commute line, for example `from home` and `from office`
+- latest leave time for each origin when available
 - navigation link
 
 ### Healthy reminder outcomes
@@ -78,6 +81,8 @@ Report which side failed, origin or destination, and preserve fallback links if 
 
 ### Routing failure
 Return `live-eta-unavailable` style status and avoid fake certainty.
+
+If one saved origin fails and another succeeds, keep the successful origin in the reminder and mark only the failed one as unavailable.
 
 ### Delivery failure
 Separate a delivery problem from a reminder-selection problem. The selection logic may still be correct even when the message did not land.

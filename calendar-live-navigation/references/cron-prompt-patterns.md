@@ -16,6 +16,10 @@ Steps:
    - meeting summary
    - minutes remaining
    - destination
+   - ETA from home
+   - latest leave time from home
+   - ETA from office
+   - latest leave time from office
    - navigation link
 6. Keep it concise and useful.
 7. Do not use the message tool yourself. The cron runner owns delivery.
@@ -39,6 +43,10 @@ Steps:
    - meeting summary
    - minutes remaining
    - destination
+   - ETA from home
+   - latest leave time from home
+   - ETA from office
+   - latest leave time from office
    - navigation link
 6. Keep it concise and useful.
 7. Do not use the message tool yourself. The cron runner owns delivery.
@@ -54,3 +62,4 @@ Output rules:
 - Use a timeout that leaves headroom for calendar fetch plus routing, not a razor-thin timeout.
 - Keep Telegram and WhatsApp state files separate so dedupe stays channel-specific when needed.
 - If a run times out, inspect timeout budget separately from reminder logic.
+- Keep the app responsible for structured route computation, and keep the cron prompt responsible only for concise wording.
