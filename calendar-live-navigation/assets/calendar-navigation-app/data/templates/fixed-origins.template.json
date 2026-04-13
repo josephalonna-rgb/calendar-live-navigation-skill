@@ -1,0 +1,20 @@
+{
+  "user": "Set your own fixed origins",
+  "updatedAt": null,
+  "origins": [
+    {
+      "id": "home",
+      "label": "Home",
+      "aliases": ["home"],
+      "address": "123 Example Street, Example City",
+      "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=123%20Example%20Street%2C%20Example%20City"
+    },
+    {
+      "id": "office",
+      "label": "Office",
+      "aliases": ["office", "work"],
+      "address": "456 Example Avenue, Example City",
+      "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=456%20Example%20Avenue%2C%20Example%20City"
+    }
+  ]
+}

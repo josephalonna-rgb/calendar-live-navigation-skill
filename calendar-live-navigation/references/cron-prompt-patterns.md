@@ -1,6 +1,16 @@
 # Cron Prompt Patterns
 
-Use a cron agent turn only as a thin wrapper around the local helper app.
+Use a cron agent turn only as a thin wrapper around the installed local helper app.
+
+## Before wiring cron
+
+Install and bootstrap the app first:
+
+```text
+./calendar-live-navigation/scripts/install-app.sh /path/to/workspace
+```
+
+Then run cron commands from the installed app directory, not from the read-only packaged asset copy.
 
 ## Telegram reminder prompt
 

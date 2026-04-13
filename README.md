@@ -1,140 +1,41 @@
 # calendar-live-navigation-skill
 
-```text
-  ____    _    _     _____ _   _ ____    _    ____  
- / ___|  / \  | |   | ____| \ | |  _ \  / \  / ___| 
-| |     / _ \ | |   |  _| |  \| | | | |/ _ \\___ \ 
-| |___ / ___ \| |___| |___| |\  | |_| / ___ \___) |
- \____/_/   \_\_____|_____|_| \_|____/_/   \_\____/ 
+Portable **OpenClaw skill package** for calendar-driven travel reminders and live ETA answers.
 
- _     _____     _______   _   _    ___     ___    _  _____ ___ ___  _   _ 
-| |   |_ _\ \   / / ____| | \ | |  / \ \   / / |  / \|_   _|_ _/ _ \| \ | |
-| |    | | \ \ / /|  _|   |  \| | / _ \\ \ / /| | / _ \ | |  | | | | |  \| |
-| |___ | |  \ V / | |___  | |\  |/ ___ \\ V / | |/ ___ \| |  | | |_| | |\  |
-|_____|___|  \_/  |_____| |_| \_/_/   \_\\_/  |_____/_/   \_\_| |___/|_| \_|
+This repo is no longer just a playbook. It now includes the runnable helper app, generic template data, install/bootstrap scripts, and packaged artifacts so another agent can install and operate it from the repo alone.
 
-       .-""-.
-      / .--. \
-     / /    \ \
-     | |    | |
-     | |.-""-.|
-    ///`.::::.`\\\
-   ||| ::/  \:: ;||
-   ||; ::\__/:: ;||
-    \\\ '::::' ///
-     `=':-..-'`
-        Joseph
-```
-
-Reusable **OpenClaw skill** for calendar-driven travel reminders and live ETA answers.
-
-This repo packages a generic workflow for an agent that needs to:
-- read upcoming calendar events
-- extract usable physical destinations
-- dedupe reminder sends
-- resolve saved origins like `home` and `office`
-- answer `when should I leave` with live routing when available
-- include origin-specific commute time and latest leave time inside reminder messages
-- drive cron-based reminder delivery without making things up
-
-## What this skill is for
+## What this package is for
 Use `calendar-live-navigation` when an agent needs to:
 - send driving reminders before meetings
-- inspect why a meeting reminder did or did not fire
-- answer ETA questions from saved origins
+- inspect why a reminder did or did not fire
+- answer ETA questions from saved origins like `home` and `office`
 - compute leave time for a meeting with a physical destination
-- compare commute time from multiple saved origins like home and office
+- compare commute time from multiple saved origins
 - debug calendar extraction, routing, dedupe, or cron issues
-
-## Workflow, in one picture
-
-```text
-Calendar events or trip question
-              |
-              v
-+-------------------------------+
-| Reminder mode or trip mode?   |
-+-------------------------------+
-      |                     |
-      v                     v
-+------------------+   +----------------------+
-| Reminder mode    |   | Trip mode            |
-| due right now?   |   | origin -> destination|
-+------------------+   +----------------------+
-      |                     |
-      v                     v
-+------------------+   +----------------------+
-| Extract usable   |   | Resolve fixed origins|
-| physical place   |   | first                |
-+------------------+   +----------------------+
-      |                     |
-      v                     v
-+------------------+   +----------------------+
-| Weak destination?|   | Build fallback links |
-+------------------+   +----------------------+
-      |                     |
-   yes | no                  v
-      v                +----------------------+
-+------------------+   | Fetch live ETA if    |
-| Skip honestly    |   | available            |
-+------------------+   +----------------------+
-      |                     |
-      v                     v
-+------------------+   +----------------------+
-| Check dedupe     |   | Return ETA or        |
-| state            |   | truthful fallback    |
-+------------------+   +----------------------+
-      |
-      v
-+------------------------------+
-| Send reminder with home and  |
-| office ETA + latest leave    |
-| time, or return NO_REPLY     |
-+------------------------------+
-```
 
 ## What is included
 
 ### Skill source
 - `calendar-live-navigation/SKILL.md`
-  - main operating instructions
-  - reminder vs trip workflow
-  - fixed-origin rules
-  - debugging order
+- `calendar-live-navigation/references/*`
 
-### References
-- `calendar-live-navigation/references/reminder-and-trip-workflow.md`
-  - the full reminder and trip execution pattern
-  - fixed-origin data expectations
-  - multi-origin reminder output guidance
-  - failure handling guidance
-- `calendar-live-navigation/references/cron-prompt-patterns.md`
-  - reusable cron prompt templates
-  - timeout and delivery notes
+### Bundled runnable app
+- `calendar-live-navigation/assets/calendar-navigation-app/`
+  - `src/index.js`
+  - `test/index.test.js`
+  - `package.json`
+  - `README.md`
+  - `data/templates/*.json`
+
+### Helper scripts
+- `calendar-live-navigation/scripts/install-app.sh`
+- `calendar-live-navigation/scripts/bootstrap-app.sh`
+- `calendar-live-navigation/scripts/package-skill.sh`
+- `calendar-live-navigation/scripts/validate-package.sh`
 
 ### Packaged artifacts
 - `calendar-live-navigation.skill`
-  - packaged skill artifact
 - `calendar-live-navigation.zip`
-  - zip export for easy sharing
-
-## Principles baked into the skill
-- **Do not fake ETA**
-- **Skip weak destinations instead of sending junk links**
-- **Resolve saved origins before guessing**
-- **Treat no reminder due as success**
-- **Separate selection bugs from delivery bugs**
-- **Keep cron workers thin and deterministic**
-- **Put latest leave time directly in the reminder when possible**
-
-## Example triggers
-This skill should trigger on asks like:
-- `send me navigation reminders before meetings`
-- `why did this calendar reminder not fire`
-- `how long from home to office right now`
-- `when should I leave for this meeting`
-- `turn calendar events into Waze reminders`
-- `tell me the ETA from home and office for this meeting reminder`
 
 ## Repo layout
 
@@ -145,17 +46,88 @@ calendar-live-navigation-skill/
 ├── calendar-live-navigation.zip
 └── calendar-live-navigation/
     ├── SKILL.md
-    └── references/
-        ├── cron-prompt-patterns.md
-        └── reminder-and-trip-workflow.md
+    ├── assets/
+    │   └── calendar-navigation-app/
+    │       ├── README.md
+    │       ├── data/
+    │       │   └── templates/
+    │       ├── package.json
+    │       ├── src/
+    │       └── test/
+    ├── references/
+    └── scripts/
 ```
+
+## Install into another workspace
+
+Clone the repo, then run:
+
+```bash
+./calendar-live-navigation/scripts/install-app.sh /path/to/workspace
+```
+
+That will:
+- copy the bundled app into `/path/to/workspace/calendar-navigation-app`
+- create writable data files from the generic templates
+- print the next commands to run
+
+## Bootstrap and configure
+
+After install:
+
+1. Open `/path/to/workspace/calendar-navigation-app/data/fixed-origins.json`
+2. Replace the example `home` and `office` entries with real user-confirmed addresses
+3. Keep `sent-reminders.json` and `sent-reminders-whatsapp.json` as local writable state files
+4. Confirm Google Calendar access works through `gog`
+
+## Required environment
+- Node.js 20+
+- `gog` CLI with Google Calendar auth for live agenda reads
+- outbound network access for live geocoding and Waze routing when using live ETA
+
+## Basic operation
+
+From the installed app directory:
+
+```bash
+npm test
+node src/index.js check --dry-run --json
+node src/index.js origins-list --json
+node src/index.js origins-save --label "Home" --address "123 Real Street, Real City" --json
+node src/index.js trip --origin home --destination office --json
+```
+
+## Rebuild the package artifacts
+
+```bash
+./calendar-live-navigation/scripts/package-skill.sh
+```
+
+## Validate the package
+
+```bash
+./calendar-live-navigation/scripts/validate-package.sh
+```
+
+Validation covers:
+- required package files exist
+- install/bootstrap into a temp workspace succeeds
+- the installed app test suite passes
+- packaged `.skill` and `.zip` contain the bundled app and scripts
 
 ## Generic by design
 This repo intentionally contains:
 - no personal calendar ids
 - no private addresses
-- no account-specific credentials
+- no owner-specific state
 - no private chat ids
-- no owner-specific rules
+- no personal email addresses
 
-It captures the reusable **calendar navigation pattern**, not my personal config.
+It ships only the reusable **calendar navigation pattern** plus generic starter templates.
+
+## What another agent needs after getting the repo link
+1. Clone or download the repo
+2. Install the app into its workspace with `scripts/install-app.sh`
+3. Replace the example fixed origins with real user-confirmed places
+4. Make sure `gog` auth works in that environment
+5. Run the installed app commands or cron wrapper prompts described in `SKILL.md`

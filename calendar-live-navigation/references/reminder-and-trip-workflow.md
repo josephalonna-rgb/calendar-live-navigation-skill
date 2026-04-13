@@ -1,5 +1,15 @@
 # Reminder And Trip Workflow
 
+## Package assumptions
+
+This skill package ships with a bundled app under `assets/calendar-navigation-app/` and helper scripts under `scripts/`.
+
+Recommended setup before operation:
+1. `scripts/install-app.sh <target-workspace-dir>`
+2. Replace the example entries in `data/fixed-origins.json`
+3. Verify `gog` access and app tests
+4. Run the installed copy from the target workspace
+
 ## Reminder mode
 
 Use reminder mode when the system needs to decide whether a calendar event deserves a travel reminder right now.
@@ -11,6 +21,7 @@ Use reminder mode when the system needs to decide whether a calendar event deser
 - lookahead minutes
 - reminder window minutes
 - sent-state file path
+- fixed-origins file path
 
 ### Flow
 1. Load upcoming events.
@@ -70,6 +81,7 @@ Each saved origin should carry:
 - derived Google Maps search link
 
 Only create durable origins after user confirmation.
+Do not ship personal addresses inside the package.
 
 ## Failure handling
 

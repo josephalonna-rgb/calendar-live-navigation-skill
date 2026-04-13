@@ -9,11 +9,24 @@ description: Run and operate calendar-based driving reminders with fixed origins
 
 Use this skill for an origin-aware calendar navigation assistant, not a plain calendar summary.
 
-This skill covers four connected jobs:
-- read upcoming calendar events
-- extract only usable physical destinations
-- compute navigation links and live driving ETA
-- send reminder messages only when a reminder is actually due, including origin-specific commute time and latest leave time
+This portable package includes:
+- the skill instructions in this directory
+- a bundled runnable Node app under `assets/calendar-navigation-app/`
+- install and bootstrap scripts under `scripts/`
+- generic template data, not personal data
+
+## Install before operating
+
+If the app is not already installed in the target workspace, install it from this skill package first.
+
+Preferred flow:
+1. Run `scripts/install-app.sh <target-workspace-dir>`
+2. Review and replace the example entries in `<target-workspace-dir>/calendar-navigation-app/data/fixed-origins.json`
+3. Confirm `gog calendar +agenda --format json` works in that environment
+4. Run `npm test` in the installed app directory
+5. Use the installed app for reminder and trip commands
+
+The bundled source lives at `assets/calendar-navigation-app/`. The install script copies it into a writable workspace location and creates live data files from templates.
 
 ## Core workflow
 
@@ -86,6 +99,15 @@ A cron-triggered agent turn should:
 
 Do not let the cron worker freeform its own logic when the local app already computed the due reminders.
 
+## Recommended installed app surface
+
+Use the installed app directory after bootstrap. A good local setup should support:
+- `node src/index.js check --dry-run --json`
+- `node src/index.js origins-list --json`
+- `node src/index.js origins-resolve --query home --json`
+- `node src/index.js origins-save --label <label> --address <address> --json`
+- `node src/index.js trip --origin home --destination office --json`
+
 ## Operating rules
 
 - Start with machine-readable output when validating behavior.
@@ -93,16 +115,7 @@ Do not let the cron worker freeform its own logic when the local app already com
 - Treat `no reminder due` as success, not failure.
 - Prefer short reminder text with summary, minutes remaining, destination, per-origin ETA, latest leave time, and navigation link.
 - When the user asks debugging questions, inspect skipped reasons and state files before guessing.
-
-## Recommended local app shape
-
-A good local helper app for this skill should support:
-- `check` for due reminder detection, including structured route estimates from saved origins
-- `origins-list` and `origins-resolve` for fixed origins
-- `origins-save` for durable user-confirmed places
-- `trip` for origin-aware ETA and leave-time checks
-- JSON output for automation
-- dry-run mode for safe validation
+- Keep template data generic until the user confirms real addresses.
 
 ## Debugging order
 
@@ -118,3 +131,5 @@ When something looks wrong, check in this order:
 
 - `references/reminder-and-trip-workflow.md` for the full execution pattern
 - `references/cron-prompt-patterns.md` for reusable cron prompt templates and delivery rules
+- `assets/calendar-navigation-app/README.md` for the bundled app surface
+- `scripts/validate-package.sh` for package validation

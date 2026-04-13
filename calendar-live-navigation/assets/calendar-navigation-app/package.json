@@ -1,0 +1,10 @@
+{
+  "name": "calendar-navigation-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node src/index.js check",
+    "test": "node --test"
+  }
+}
